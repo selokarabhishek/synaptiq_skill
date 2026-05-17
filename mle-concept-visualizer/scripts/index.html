@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>MLE Concept Visualizer Runner</title>
+  </head>
+  <body>
+    <script>
+      const CONCEPTS = {
+        "self-attention": {
+          label: "Self-Attention",
+          summary:
+            "Shows how one token compares itself against all other tokens, converts scores into weights, and mixes context back into the output.",
+        },
+        "multi-head-attention": {
+          label: "Multi-Head Attention",
+          summary:
+            "Shows how different heads can attend to different relationships in parallel before merging their views.",
+        },
+        "flash-attention": {
+          label: "FlashAttention",
+          summary:
+            "Shows how blockwise attention keeps the same math while cutting expensive memory movement.",
+        },
+        "kv-cache": {
+          label: "KV Cache",
+          summary:
+            "Shows why autoregressive decoding stores keys and values from previous tokens to avoid recomputing them each step.",
+        },
+      };
+
+      const ALIASES = {
+        attention: "self-attention",
+        "attention visualization": "self-attention",
+        "attention visualisation": "self-attention",
+        mha: "multi-head-attention",
+        "multi head attention": "multi-head-attention",
+        "flash attention": "flash-attention",
+        flashattention: "flash-attention",
+        "kv cache": "kv-cache",
+        "key value cache": "kv-cache",
+        "key-value cache": "kv-cache",
+      };
+
+      function normalizeConcept(raw) {
+        if (!raw) return "self-attention";
+        const lower = String(raw).trim().toLowerCase();
+        return CONCEPTS[lower] ? lower : ALIASES[lower] || "self-attention";
+      }
+
+      window["ai_edge_gallery_get_result"] = async (data) => {
+        try {
+          const parsed = data ? JSON.parse(data) : {};
+          const concept = normalizeConcept(parsed.concept);
+          const focus = parsed.focus ? String(parsed.focus).trim() : "";
+          const details = CONCEPTS[concept];
+          const query = new URLSearchParams({
+            concept,
+            label: details.label,
+            summary: details.summary,
+            focus,
+          });
+
+          return JSON.stringify({
+            result:
+              "Opened an interactive explainer for " +
+              details.label +
+              (focus ? " with extra focus on " + focus + "." : "."),
+            webview: {
+              url: "webview.html?" + query.toString(),
+              aspectRatio: 1.35,
+            },
+          });
+        } catch (error) {
+          return JSON.stringify({
+            error: "Failed to prepare concept visualizer: " + error.message,
+          });
+        }
+      };
+    </script>
+  </body>
+</html>

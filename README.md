@@ -21,6 +21,10 @@ behavioral-star-coach/
   SKILL.md
 resume-project-griller/
   SKILL.md
+mle-concept-visualizer/
+  SKILL.md
+  scripts/index.html
+  assets/webview.html
 ```
 
 ## Skills
@@ -33,6 +37,7 @@ resume-project-griller/
 - `company-sprint-planner`
 - `behavioral-star-coach`
 - `resume-project-griller`
+- `mle-concept-visualizer`
 
 ## Raw import URLs
 
@@ -47,6 +52,7 @@ https://raw.githubusercontent.com/selokarabhishek/synaptiq_skill/main/ml-system-
 https://raw.githubusercontent.com/selokarabhishek/synaptiq_skill/main/company-sprint-planner/SKILL.md
 https://raw.githubusercontent.com/selokarabhishek/synaptiq_skill/main/behavioral-star-coach/SKILL.md
 https://raw.githubusercontent.com/selokarabhishek/synaptiq_skill/main/resume-project-griller/SKILL.md
+https://raw.githubusercontent.com/selokarabhishek/synaptiq_skill/main/mle-concept-visualizer/SKILL.md
 ```
 
 ## GitHub Pages folder URLs
@@ -62,6 +68,7 @@ https://selokarabhishek.github.io/synaptiq_skill/ml-system-design-interviewer/
 https://selokarabhishek.github.io/synaptiq_skill/company-sprint-planner/
 https://selokarabhishek.github.io/synaptiq_skill/behavioral-star-coach/
 https://selokarabhishek.github.io/synaptiq_skill/resume-project-griller/
+https://selokarabhishek.github.io/synaptiq_skill/mle-concept-visualizer/
 ```
 
 ## iPhone note

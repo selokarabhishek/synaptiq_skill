@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MLE Concept Visualizer</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #0d1117;
+        --panel: #161b22;
+        --panel-2: #1f2630;
+        --text: #e6edf3;
+        --muted: #9fb0c3;
+        --accent: #58a6ff;
+        --accent-2: #2ea043;
+        --warning: #f2cc60;
+        --border: rgba(255, 255, 255, 0.09);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(88, 166, 255, 0.22), transparent 34%),
+          radial-gradient(circle at top right, rgba(46, 160, 67, 0.16), transparent 28%),
+          var(--bg);
+        color: var(--text);
+      }
+
+      #root {
+        min-height: 100vh;
+      }
+
+      .app {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 20px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .hero,
+      .panel {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 18px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+      }
+
+      .hero {
+        display: grid;
+        gap: 14px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(88, 166, 255, 0.12);
+        border: 1px solid rgba(88, 166, 255, 0.25);
+        color: #b9d8ff;
+        font-size: 12px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      .hero h1 {
+        font-size: clamp(28px, 5vw, 44px);
+        line-height: 1.05;
+      }
+
+      .hero p {
+        color: var(--muted);
+        line-height: 1.5;
+        max-width: 70ch;
+      }
+
+      .row {
+        display: grid;
+        gap: 16px;
+      }
+
+      .two-col {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+
+      .three-col {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .chip,
+      .tab {
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+
+      .chip.active,
+      .tab.active {
+        background: rgba(88, 166, 255, 0.18);
+        border-color: rgba(88, 166, 255, 0.5);
+      }
+
+      .tabs {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .stage {
+        display: grid;
+        gap: 12px;
+      }
+
+      .stage-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .stage-index {
+        width: 30px;
+        height: 30px;
+        border-radius: 999px;
+        background: rgba(88, 166, 255, 0.18);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .metric {
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .metric-label {
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .metric-value {
+        margin-top: 8px;
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .viz-box {
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        padding: 16px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
+      }
+
+      .token-row,
+      .head-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .token {
+        min-width: 74px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        text-align: center;
+        background: rgba(88, 166, 255, 0.12);
+        border: 1px solid rgba(88, 166, 255, 0.25);
+      }
+
+      .heatmap {
+        display: grid;
+        gap: 6px;
+      }
+
+      .heatmap-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+      }
+
+      .cell {
+        border-radius: 12px;
+        padding: 14px 8px;
+        text-align: center;
+        font-size: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .bar-stack {
+        display: grid;
+        gap: 10px;
+      }
+
+      .bar-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .bar-track {
+        height: 12px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .bar-fill {
+        height: 100%;
+        border-radius: 999px;
+      }
+
+      input[type="range"] {
+        width: 100%;
+      }
+
+      .bullet-list {
+        display: grid;
+        gap: 10px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+
+      .bullet-list li {
+        padding-left: 16px;
+        position: relative;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .bullet-list li::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: var(--accent);
+        position: absolute;
+        left: 0;
+        top: 0.6em;
+      }
+
+      .callout {
+        padding: 14px;
+        border-radius: 16px;
+        border: 1px solid rgba(242, 204, 96, 0.28);
+        background: rgba(242, 204, 96, 0.08);
+        color: #f9df89;
+      }
+
+      @media (max-width: 840px) {
+        .two-col,
+        .three-col,
+        .metric-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import React from "https://esm.sh/react@18";
+      import { createRoot } from "https://esm.sh/react-dom@18/client";
+
+      const h = React.createElement;
+
+      const search = new URLSearchParams(window.location.search);
+      const requestedConcept = search.get("concept") || "self-attention";
+      const focus = search.get("focus") || "interview framing";
+
+      const conceptData = {
+        "self-attention": {
+          title: "Self-Attention",
+          subtitle:
+            "A token looks at every other token, scores relevance, then mixes context back into its output.",
+          takeaways: [
+            "The naive cost grows with every token looking at every other token.",
+            "Attention weights show which tokens matter to the current token.",
+            "Interview answer: explain score, normalize, then weighted sum.",
+          ],
+          stages: [
+            {
+              title: "Problem",
+              body: "A token needs global context, not just the previous hidden state.",
+            },
+            {
+              title: "Naive flow",
+              body: "Compute Q, K, V. Compare one query token against all keys. Normalize with softmax. Use the weights to mix values.",
+            },
+            {
+              title: "What breaks at scale",
+              body: "The attention matrix grows quadratically with sequence length, so memory and bandwidth become painful.",
+            },
+            {
+              title: "Interviewer framing",
+              body: "Say what the token attends to, why the matrix is O(n^2), and where the bottleneck appears.",
+            },
+          ],
+          metrics: (length) => ({
+            complexity: "O(n^2)",
+            memory: length * length,
+            latency: Math.round(length * 1.4),
+          }),
+          renderViz: (length) =>
+            h(
+              "div",
+              { className: "viz-box" },
+              h("div", { className: "token-row" }, ...["The", "model", "learns", "context"].map((token) => h("div", { className: "token", key: token }, token))),
+              h("div", { style: { height: "12px" } }),
+              h("div", { className: "heatmap" },
+                ...[
+                  [0.12, 0.21, 0.28, 0.39],
+                  [0.15, 0.18, 0.44, 0.23],
+                  [0.08, 0.11, 0.16, 0.65],
+                  [0.31, 0.19, 0.23, 0.27],
+                ].map((row, rowIndex) =>
+                  h("div", { className: "heatmap-row", key: rowIndex },
+                    ...row.map((value, colIndex) =>
+                      h(
+                        "div",
+                        {
+                          className: "cell",
+                          key: rowIndex + "-" + colIndex,
+                          style: {
+                            background: `rgba(88, 166, 255, ${0.15 + value * 0.75})`,
+                          },
+                        },
+                        value.toFixed(2)
+                      )
+                    )
+                  )
+                )
+              ),
+              h("p", { className: "muted", style: { marginTop: "12px" } }, "Toy heatmap: each row is one query token attending across the sequence.")
+            ),
+        },
+        "multi-head-attention": {
+          title: "Multi-Head Attention",
+          subtitle:
+            "Several attention heads learn different relationships in parallel, then merge their outputs.",
+          takeaways: [
+            "Different heads can specialize in locality, syntax, or long-range references.",
+            "More heads are not automatically better; the point is diverse subspaces.",
+            "Interview answer: parallel views, concatenation, projection, and tradeoffs.",
+          ],
+          stages: [
+            {
+              title: "Problem",
+              body: "One attention pattern may miss other useful relationships in the same sentence.",
+            },
+            {
+              title: "Naive flow",
+              body: "Split the projection space into multiple heads, let each head attend separately, then merge.",
+            },
+            {
+              title: "What breaks at scale",
+              body: "More heads raise compute and memory pressure, so head count and dimension need balancing.",
+            },
+            {
+              title: "Interviewer framing",
+              body: "Talk about specialized subspaces and the merge step, not just 'more attention'.",
+            },
+          ],
+          metrics: (length) => ({
+            complexity: "O(h·n^2)",
+            memory: length * length * 4,
+            latency: Math.round(length * 1.7),
+          }),
+          renderViz: () =>
+            h(
+              "div",
+              { className: "viz-box" },
+              h("div", { className: "head-row" },
+                ...[
+                  ["Head 1", "local syntax"],
+                  ["Head 2", "coreference"],
+                  ["Head 3", "topic relevance"],
+                ].map(([label, desc]) =>
+                  h("div", { className: "metric", key: label },
+                    h("div", { className: "metric-label" }, label),
+                    h("div", { className: "metric-value", style: { fontSize: "18px" } }, desc)
+                  )
+                )
+              ),
+              h("p", { className: "muted", style: { marginTop: "12px" } }, "Think of each head as a different lens on the same sentence.")
+            ),
+        },
+        "flash-attention": {
+          title: "FlashAttention",
+          subtitle:
+            "The math stays equivalent, but the implementation becomes IO-aware by processing attention in blocks.",
+          takeaways: [
+            "The win comes mostly from reducing expensive memory traffic, not changing transformer semantics.",
+            "Blockwise processing avoids materializing the full attention matrix in high-bandwidth memory.",
+            "Interview answer: same output target, better tiling, fewer HBM reads and writes.",
+          ],
+          stages: [
+            {
+              title: "Problem",
+              body: "Naive attention spills giant intermediate matrices to memory and pays repeated IO costs.",
+            },
+            {
+              title: "Naive flow",
+              body: "Materialize QK^T, store it, softmax it, store it, then multiply by V.",
+            },
+            {
+              title: "Optimization",
+              body: "Process tiles that fit on-chip, keep partial statistics, and avoid writing the full matrix out.",
+            },
+            {
+              title: "Interviewer framing",
+              body: "Lead with IO bottleneck, not with just 'it is faster'. Explain blockwise exact attention.",
+            },
+          ],
+          metrics: (length) => ({
+            complexity: "O(n^2) math",
+            memory: length * length,
+            latency: Math.round(length * 1.2),
+          }),
+          renderViz: (length) => {
+            const naiveWrites = Math.round((length * length) / 8);
+            const flashWrites = Math.round((length * length) / 28);
+            const ratio = Math.max(1, Math.round(naiveWrites / Math.max(1, flashWrites)));
+            return h(
+              "div",
+              { className: "viz-box" },
+              h("div", { className: "bar-stack" },
+                h("div", { className: "bar-label" }, h("span", null, "Naive attention memory traffic"), h("span", null, naiveWrites + " units")),
+                h("div", { className: "bar-track" }, h("div", { className: "bar-fill", style: { width: "100%", background: "linear-gradient(90deg, #ff7b72, #f2cc60)" } })),
+                h("div", { className: "bar-label" }, h("span", null, "FlashAttention blockwise traffic"), h("span", null, flashWrites + " units")),
+                h("div", { className: "bar-track" }, h("div", { className: "bar-fill", style: { width: Math.max(8, Math.round((flashWrites / naiveWrites) * 100)) + "%", background: "linear-gradient(90deg, #2ea043, #58a6ff)" } })),
+              ),
+              h("div", { className: "callout", style: { marginTop: "14px" } }, "Interview takeaway: the asymptotic attention math stays quadratic, but the implementation slashes IO by working tile-by-tile. Approximate improvement shown here: " + ratio + "x less memory traffic.")
+            );
+          },
+        },
+        "kv-cache": {
+          title: "KV Cache",
+          subtitle:
+            "During autoregressive decoding, previously computed keys and values are stored so each new token only adds a small incremental step.",
+          takeaways: [
+            "Without a KV cache, generation recomputes old keys and values every step.",
+            "KV cache improves decode efficiency but increases memory usage with context length.",
+            "Interview answer: better per-token latency, worse memory footprint, especially for long prompts and many users.",
+          ],
+          stages: [
+            {
+              title: "Problem",
+              body: "Autoregressive generation repeatedly revisits the growing prefix.",
+            },
+            {
+              title: "Naive flow",
+              body: "At each new token, recompute K and V for the entire context so far.",
+            },
+            {
+              title: "Optimization",
+              body: "Store past K and V once, then append only the new token's entries on each decode step.",
+            },
+            {
+              title: "Interviewer framing",
+              body: "Call out the tradeoff directly: lower decode compute, higher memory pressure per session.",
+            },
+          ],
+          metrics: (length) => ({
+            complexity: "append-only decode",
+            memory: length * 12,
+            latency: Math.round(Math.max(6, length * 0.35)),
+          }),
+          renderViz: (length) => {
+            const steps = [1, 2, 3, 4].map((n) => ({
+              step: n,
+              naive: n * n,
+              cached: n,
+            }));
+            return h(
+              "div",
+              { className: "viz-box" },
+              h("div", { className: "bar-stack" },
+                ...steps.map((entry) =>
+                  h(
+                    "div",
+                    { key: entry.step },
+                    h("div", { className: "bar-label" }, h("span", null, "Decode step " + entry.step), h("span", null, "naive " + entry.naive + " vs cached " + entry.cached)),
+                    h("div", { className: "bar-track" },
+                      h("div", {
+                        className: "bar-fill",
+                        style: {
+                          width: Math.min(100, entry.naive * 20) + "%",
+                          background: "linear-gradient(90deg, #ff7b72, #f2cc60)",
+                        },
+                      })
+                    )
+                  )
+                )
+              ),
+              h("p", { className: "muted", style: { marginTop: "12px" } }, "Each step avoids redoing old K/V work, but cached tensors keep growing with context length " + length + ".")
+            );
+          },
+        },
+      };
+
+      function App() {
+        const [conceptKey, setConceptKey] = React.useState(
+          conceptData[requestedConcept] ? requestedConcept : "self-attention"
+        );
+        const [stageIndex, setStageIndex] = React.useState(0);
+        const [length, setLength] = React.useState(8);
+
+        const data = conceptData[conceptKey];
+        const stage = data.stages[stageIndex];
+        const metrics = data.metrics(length);
+
+        React.useEffect(() => {
+          setStageIndex(0);
+        }, [conceptKey]);
+
+        return h(
+          "div",
+          { className: "app" },
+          h(
+            "section",
+            { className: "hero" },
+            h(
+              "div",
+              { className: "eyebrow" },
+              h("span", { className: "badge" }, "React Webview"),
+              h("span", null, "SynaptiQ x AI Edge Gallery")
+            ),
+            h("h1", null, data.title),
+            h("p", null, data.subtitle),
+            h(
+              "div",
+              { className: "chip-row" },
+              h("span", { className: "badge" }, "Focus: " + focus),
+              h("span", { className: "badge" }, "Interview-first explainer"),
+              h("span", { className: "badge" }, "Visual + tradeoff framing")
+            )
+          ),
+          h(
+            "section",
+            { className: "panel" },
+            h("div", { className: "stage-head" },
+              h("h2", null, "Concept picker"),
+              h("p", { className: "muted" }, "Switch between common MAANG MLE interview topics")
+            ),
+            h(
+              "div",
+              { className: "chip-row", style: { marginTop: "14px" } },
+              ...Object.entries(conceptData).map(([key, item]) =>
+                h(
+                  "button",
+                  {
+                    key,
+                    className: "chip" + (key === conceptKey ? " active" : ""),
+                    onClick: () => setConceptKey(key),
+                  },
+                  item.title
+                )
+              )
+            )
+          ),
+          h(
+            "section",
+            { className: "row two-col" },
+            h(
+              "div",
+              { className: "panel stage" },
+              h(
+                "div",
+                { className: "stage-head" },
+                h("h2", null, "4-panel interview mental model"),
+                h("span", { className: "muted" }, "Best for fast recall")
+              ),
+              h(
+                "div",
+                { className: "tabs" },
+                ...data.stages.map((item, index) =>
+                  h(
+                    "button",
+                    {
+                      key: item.title,
+                      className: "tab" + (index === stageIndex ? " active" : ""),
+                      onClick: () => setStageIndex(index),
+                    },
+                    (index + 1) + ". " + item.title
+                  )
+                )
+              ),
+              h(
+                "div",
+                { className: "stage" },
+                h("div", { className: "stage-head" },
+                  h("div", { className: "stage-index" }, String(stageIndex + 1)),
+                  h("h3", { style: { flex: 1 } }, stage.title)
+                ),
+                h("p", { className: "muted" }, stage.body)
+              ),
+              h("div", { style: { marginTop: "8px" } }, data.renderViz(length))
+            ),
+            h(
+              "div",
+              { className: "panel stage" },
+              h("h2", null, "Scale intuition"),
+              h("p", { className: "muted" }, "Use the sequence-length slider to make the bottleneck feel concrete."),
+              h(
+                "div",
+                { style: { marginTop: "16px" } },
+                h("div", { className: "bar-label" }, h("span", null, "Sequence length"), h("span", null, length + " tokens")),
+                h("input", {
+                  type: "range",
+                  min: 4,
+                  max: 64,
+                  step: 4,
+                  value: length,
+                  onChange: (event) => setLength(Number(event.target.value)),
+                })
+              ),
+              h(
+                "div",
+                { className: "metric-grid", style: { marginTop: "16px" } },
+                h("div", { className: "metric" }, h("div", { className: "metric-label" }, "Math / scaling"), h("div", { className: "metric-value" }, metrics.complexity)),
+                h("div", { className: "metric" }, h("div", { className: "metric-label" }, "Memory proxy"), h("div", { className: "metric-value" }, String(metrics.memory))),
+                h("div", { className: "metric" }, h("div", { className: "metric-label" }, "Latency proxy"), h("div", { className: "metric-value" }, String(metrics.latency) + " ms"))
+              ),
+              h("div", { className: "callout", style: { marginTop: "16px" } }, "Good interview habit: always connect the concept to sequence length, memory movement, and latency budget.")
+            )
+          ),
+          h(
+            "section",
+            { className: "row two-col" },
+            h(
+              "div",
+              { className: "panel stage" },
+              h("h2", null, "What to say in an interview"),
+              h(
+                "ul",
+                { className: "bullet-list", style: { marginTop: "12px" } },
+                ...data.takeaways.map((item) => h("li", { key: item }, item))
+              )
+            ),
+            h(
+              "div",
+              { className: "panel stage" },
+              h("h2", null, "Visualization best practices"),
+              h(
+                "ul",
+                { className: "bullet-list", style: { marginTop: "12px" } },
+                h("li", null, "Start with the naive version before the optimization."),
+                h("li", null, "Animate one moving part at a time: token flow, memory, or latency."),
+                h("li", null, "Use small concrete examples before abstract matrices."),
+                h("li", null, "End with the business or systems bottleneck in plain English."),
+                h("li", null, "Tie every visual back to what changes at scale.")
+              )
+            )
+          )
+        );
+      }
+
+      createRoot(document.getElementById("root")).render(h(App));
+    </script>
+  </body>
+</html>
