@@ -242,13 +242,18 @@
   <body>
     <div id="root"></div>
     <script>
-      function getParam(name) {
-        try {
-          var params = new URLSearchParams(window.location.search);
-          return params.get(name) || "";
-        } catch (e) {
-          return "";
+      function getQueryParam(name) {
+        var search = window.location.search || "";
+        if (!search || search.length < 2) return "";
+        var parts = search.substring(1).split("&");
+        for (var i = 0; i < parts.length; i++) {
+          var pair = parts[i].split("=");
+          var key = pair[0] || "";
+          if (key === name) {
+            return pair.length > 1 ? pair.slice(1).join("=") : "";
+          }
         }
+        return "";
       }
 
       function safeDecode(value) {
@@ -259,8 +264,8 @@
         }
       }
 
-      var concept = safeDecode(getParam("concept")) || "self-attention";
-      var focus = safeDecode(getParam("focus")) || "interview framing";
+      var concept = safeDecode(getQueryParam("concept")) || "self-attention";
+      var focus = safeDecode(getQueryParam("focus")) || "interview framing";
 
       var PRESETS = {
         "self-attention": {

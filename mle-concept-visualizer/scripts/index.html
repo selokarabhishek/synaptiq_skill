@@ -49,21 +49,27 @@
         return "generic";
       }
 
+      function encodeQueryValue(value) {
+        return encodeURIComponent(value == null ? "" : String(value));
+      }
+
       window["ai_edge_gallery_get_result"] = async function(data) {
         try {
           var parsed = parseData(data);
           var rawConcept = parsed.concept ? String(parsed.concept).trim() : "self-attention";
           var focus = parsed.focus ? String(parsed.focus).trim() : "interview framing";
           var conceptKey = normalizeConcept(rawConcept);
-          var params = new URLSearchParams({
-            concept: conceptKey === "generic" ? rawConcept : conceptKey,
-            focus: focus
-          });
+          var resolvedConcept = conceptKey === "generic" ? rawConcept : conceptKey;
+          var url =
+            "webview.html?concept=" +
+            encodeQueryValue(resolvedConcept) +
+            "&focus=" +
+            encodeQueryValue(focus);
 
           return JSON.stringify({
             result: "Opened an interactive visual explanation for " + rawConcept + ".",
             webview: {
-              url: "webview.html?" + params.toString(),
+              url: url,
               aspectRatio: 1.35
             }
           });
