@@ -23,6 +23,7 @@ Concept selection rules:
 - Map `mha` to `multi-head-attention`.
 - Map `flash attention` or `flashattention` to `flash-attention`.
 - Map `key value cache`, `key-value cache`, or `kv cache` to `kv-cache`.
+- Map `qkv cache` or `qkv-cache` to `kv-cache`.
 
 Response rules:
 - Use the visualizer first when the user explicitly asks for a visual explanation.
