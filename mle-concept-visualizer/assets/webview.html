@@ -260,22 +260,122 @@
       }
 
       var concept = safeDecode(getParam("concept")) || "self-attention";
-      var title = safeDecode(getParam("title")) || "Concept Visualizer";
-      var subtitle = safeDecode(getParam("subtitle")) || "Interview-first visual explanation";
       var focus = safeDecode(getParam("focus")) || "interview framing";
-      var payloadRaw = safeDecode(getParam("payload"));
-      var payload = {};
 
-      try {
-        payload = payloadRaw ? JSON.parse(payloadRaw) : {};
-      } catch (e) {
-        payload = {
-          stages: [],
-          bullets: ["Failed to parse visualization payload."],
-          metrics: [],
+      var PRESETS = {
+        "self-attention": {
+          title: "Self-Attention",
+          subtitle: "A token compares itself against all tokens, then mixes context back into the output.",
+          bullets: [
+            "Every token creates query, key, and value vectors.",
+            "Attention scores tell us which tokens matter to the current token.",
+            "The bottleneck is the full attention matrix growing quadratically with sequence length."
+          ],
+          stages: [
+            { title: "Problem", body: "A token needs global context, not just the previous hidden state." },
+            { title: "Naive flow", body: "Compute Q, K, and V, compare the query token against all keys, normalize the scores, then mix values." },
+            { title: "What breaks at scale", body: "The attention matrix is O(n^2) in sequence length, which stresses memory and latency." },
+            { title: "Interviewer framing", body: "Explain score, softmax, weighted sum, and why the matrix becomes the bottleneck." }
+          ],
+          metrics: [
+            { label: "Math / scaling", value: "O(n^2)" },
+            { label: "Main bottleneck", value: "memory" },
+            { label: "Interview hook", value: "global context" }
+          ],
+          viz: { type: "self-attention" }
+        },
+        "multi-head-attention": {
+          title: "Multi-Head Attention",
+          subtitle: "Several attention heads learn different relationships in parallel before merging.",
+          bullets: [
+            "Different heads can focus on different relationships in the same sequence.",
+            "The value is multiple representation subspaces, not just more compute.",
+            "A strong answer explains the per-head view and the merge step."
+          ],
+          stages: [
+            { title: "Problem", body: "One attention pattern may miss other useful relationships in a sentence." },
+            { title: "Naive flow", body: "Project into multiple heads, attend separately, concatenate the outputs, then project again." },
+            { title: "What breaks at scale", body: "More heads add compute and memory pressure, so head count and width need balancing." },
+            { title: "Interviewer framing", body: "Stress specialized subspaces and parallel relationships, not just 'more attention'." }
+          ],
+          metrics: [
+            { label: "Math / scaling", value: "O(h·n^2)" },
+            { label: "Main bottleneck", value: "compute + memory" },
+            { label: "Interview hook", value: "parallel views" }
+          ],
+          viz: { type: "multi-head-attention" }
+        },
+        "flash-attention": {
+          title: "FlashAttention",
+          subtitle: "An IO-aware implementation of attention that avoids materializing large intermediates in expensive memory.",
+          bullets: [
+            "FlashAttention does not change transformer semantics; it changes how the computation is scheduled.",
+            "The big win is reduced memory traffic, not a new attention formula.",
+            "Interview answer: tiled exact attention, on-chip blocks, fewer HBM reads and writes."
+          ],
+          stages: [
+            { title: "Problem", body: "Naive attention writes giant intermediate matrices to memory and pays repeated IO cost." },
+            { title: "Naive flow", body: "Materialize QK^T, materialize the softmax, then multiply by V." },
+            { title: "What changed", body: "Process attention in tiles that fit on-chip and keep running normalization statistics." },
+            { title: "Interviewer framing", body: "Lead with IO bottleneck and memory movement before talking about speed." }
+          ],
+          metrics: [
+            { label: "Math / scaling", value: "O(n^2) math" },
+            { label: "Main bottleneck", value: "IO / bandwidth" },
+            { label: "Interview hook", value: "blockwise exact attention" }
+          ],
+          viz: { type: "flash-attention" }
+        },
+        "kv-cache": {
+          title: "KV Cache",
+          subtitle: "Autoregressive decoding stores old keys and values so each new token adds incremental work instead of recomputing the full prefix.",
+          bullets: [
+            "Without a KV cache, decoding keeps recomputing old key/value states.",
+            "A KV cache reduces per-token decode compute but increases memory footprint.",
+            "Interview answer: lower latency per new token, higher memory per active sequence."
+          ],
+          stages: [
+            { title: "Problem", body: "Autoregressive generation revisits the entire prefix at every step." },
+            { title: "Naive flow", body: "Recompute keys and values for the whole context on each decode step." },
+            { title: "What changed", body: "Store old keys and values once, then append only the newest token's state." },
+            { title: "Interviewer framing", body: "Say the tradeoff explicitly: better decode speed, worse memory pressure." }
+          ],
+          metrics: [
+            { label: "Math / scaling", value: "append-only decode" },
+            { label: "Main bottleneck", value: "memory footprint" },
+            { label: "Interview hook", value: "latency vs memory" }
+          ],
+          viz: { type: "kv-cache" }
+        }
+      };
+
+      function buildGenericPreset(name, currentFocus) {
+        return {
+          title: name,
+          subtitle: "General interview visualization for " + name + ".",
+          bullets: [
+            "Start with the problem the concept is solving.",
+            "Explain the naive version before the optimized one.",
+            "Highlight the main tradeoff in latency, memory, quality, or scale."
+          ],
+          stages: [
+            { title: "Problem", body: "What bottleneck or missing capability does " + name + " address?" },
+            { title: "Naive flow", body: "Describe the simplest working version first." },
+            { title: "What breaks at scale", body: "Call out the main pressure: memory, latency, compute, or reliability." },
+            { title: "Interviewer framing", body: "Tie the concept back to tradeoffs, production constraints, and " + currentFocus + "." }
+          ],
+          metrics: [
+            { label: "Focus", value: currentFocus || "intuition" },
+            { label: "Mode", value: "generic" },
+            { label: "Interview hook", value: "tradeoffs" }
+          ],
           viz: { type: "generic" }
         };
       }
+
+      var preset = PRESETS[concept] || buildGenericPreset(concept, focus);
+      var title = preset.title;
+      var subtitle = preset.subtitle;
 
       function escapeHtml(text) {
         return String(text)
@@ -403,10 +503,10 @@
         return renderGeneric();
       }
 
-      var stages = payload.stages || [];
-      var bullets = payload.bullets || [];
-      var metrics = payload.metrics || [];
-      var vizType = payload.viz && payload.viz.type ? payload.viz.type : "generic";
+      var stages = preset.stages || [];
+      var bullets = preset.bullets || [];
+      var metrics = preset.metrics || [];
+      var vizType = preset.viz && preset.viz.type ? preset.viz.type : "generic";
 
       document.getElementById("root").innerHTML =
         '<div class="app">' +
