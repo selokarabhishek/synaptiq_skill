@@ -8,14 +8,15 @@
       :root {
         color-scheme: light dark;
         --bg: #0d1117;
-        --panel: #161b22;
-        --panel-2: #1f2630;
+        --card: #161b22;
+        --card-2: #1c2430;
         --text: #e6edf3;
         --muted: #9fb0c3;
-        --accent: #58a6ff;
-        --accent-2: #2ea043;
-        --warning: #f2cc60;
-        --border: rgba(255, 255, 255, 0.09);
+        --border: rgba(255, 255, 255, 0.1);
+        --blue: #58a6ff;
+        --green: #2ea043;
+        --gold: #f2cc60;
+        --red: #ff7b72;
       }
 
       * {
@@ -26,89 +27,52 @@
         margin: 0;
         font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         background:
-          radial-gradient(circle at top left, rgba(88, 166, 255, 0.22), transparent 34%),
-          radial-gradient(circle at top right, rgba(46, 160, 67, 0.16), transparent 28%),
+          radial-gradient(circle at top left, rgba(88, 166, 255, 0.22), transparent 30%),
+          radial-gradient(circle at top right, rgba(46, 160, 67, 0.14), transparent 24%),
           var(--bg);
         color: var(--text);
-      }
-
-      #root {
-        min-height: 100vh;
       }
 
       .app {
         max-width: 980px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 18px;
         display: grid;
         gap: 16px;
       }
 
       .hero,
-      .panel {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
+      .card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
         border: 1px solid var(--border);
         border-radius: 22px;
         padding: 18px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
       }
 
       .hero {
         display: grid;
-        gap: 14px;
+        gap: 12px;
       }
 
       .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
         font-size: 12px;
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: var(--muted);
       }
 
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: rgba(88, 166, 255, 0.12);
-        border: 1px solid rgba(88, 166, 255, 0.25);
-        color: #b9d8ff;
-        font-size: 12px;
-      }
-
-      h1,
-      h2,
-      h3,
-      p {
+      h1, h2, h3, p {
         margin: 0;
       }
 
-      .hero h1 {
-        font-size: clamp(28px, 5vw, 44px);
+      h1 {
+        font-size: clamp(28px, 5vw, 42px);
         line-height: 1.05;
       }
 
-      .hero p {
+      .muted {
         color: var(--muted);
         line-height: 1.5;
-        max-width: 70ch;
-      }
-
-      .row {
-        display: grid;
-        gap: 16px;
-      }
-
-      .two-col {
-        grid-template-columns: 1.1fr 0.9fr;
-      }
-
-      .three-col {
-        grid-template-columns: repeat(3, 1fr);
       }
 
       .chip-row {
@@ -117,67 +81,57 @@
         gap: 10px;
       }
 
-      .chip,
-      .tab {
-        border: 1px solid var(--border);
-        background: rgba(255, 255, 255, 0.03);
-        color: var(--text);
+      .chip {
+        padding: 8px 12px;
         border-radius: 999px;
-        padding: 10px 14px;
-        cursor: pointer;
-        font-size: 13px;
+        border: 1px solid rgba(88,166,255,0.3);
+        background: rgba(88,166,255,0.12);
+        color: #b9d8ff;
+        font-size: 12px;
       }
 
-      .chip.active,
-      .tab.active {
-        background: rgba(88, 166, 255, 0.18);
-        border-color: rgba(88, 166, 255, 0.5);
-      }
-
-      .tabs {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-
-      .stage {
+      .grid-2 {
         display: grid;
-        gap: 12px;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 16px;
       }
 
-      .stage-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-      }
-
-      .stage-index {
-        width: 30px;
-        height: 30px;
-        border-radius: 999px;
-        background: rgba(88, 166, 255, 0.18);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-      }
-
-      .muted {
-        color: var(--muted);
-      }
-
-      .metric-grid {
+      .grid-3 {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 12px;
       }
 
-      .metric {
-        border: 1px solid var(--border);
-        border-radius: 16px;
+      .stage-list,
+      .bullet-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .stage {
         padding: 14px;
-        background: rgba(255, 255, 255, 0.02);
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.02);
+      }
+
+      .stage-index {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: rgba(88,166,255,0.2);
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .metric {
+        padding: 14px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.02);
       }
 
       .metric-label {
@@ -194,26 +148,26 @@
       }
 
       .viz-box {
+        padding: 16px;
         border-radius: 18px;
         border: 1px solid var(--border);
-        padding: 16px;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
+        background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
       }
 
-      .token-row,
-      .head-row {
+      .token-row {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 8px;
+        margin-bottom: 12px;
       }
 
       .token {
-        min-width: 74px;
         padding: 10px 12px;
-        border-radius: 14px;
+        min-width: 70px;
         text-align: center;
-        background: rgba(88, 166, 255, 0.12);
-        border: 1px solid rgba(88, 166, 255, 0.25);
+        border-radius: 14px;
+        background: rgba(88,166,255,0.12);
+        border: 1px solid rgba(88,166,255,0.25);
       }
 
       .heatmap {
@@ -229,13 +183,12 @@
 
       .cell {
         border-radius: 12px;
-        padding: 14px 8px;
-        text-align: center;
+        padding: 12px 8px;
         font-size: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: center;
       }
 
-      .bar-stack {
+      .bar-group {
         display: grid;
         gap: 10px;
       }
@@ -243,6 +196,7 @@
       .bar-label {
         display: flex;
         justify-content: space-between;
+        gap: 12px;
         font-size: 13px;
         color: var(--muted);
       }
@@ -251,7 +205,7 @@
         height: 12px;
         border-radius: 999px;
         overflow: hidden;
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(255,255,255,0.08);
       }
 
       .bar-fill {
@@ -259,48 +213,27 @@
         border-radius: 999px;
       }
 
-      input[type="range"] {
-        width: 100%;
-      }
-
-      .bullet-list {
-        display: grid;
-        gap: 10px;
-        padding: 0;
+      ul {
         margin: 0;
-        list-style: none;
+        padding-left: 18px;
       }
 
-      .bullet-list li {
-        padding-left: 16px;
-        position: relative;
+      li {
+        margin: 8px 0;
         color: var(--muted);
-        line-height: 1.5;
-      }
-
-      .bullet-list li::before {
-        content: "";
-        width: 7px;
-        height: 7px;
-        border-radius: 999px;
-        background: var(--accent);
-        position: absolute;
-        left: 0;
-        top: 0.6em;
       }
 
       .callout {
         padding: 14px;
         border-radius: 16px;
-        border: 1px solid rgba(242, 204, 96, 0.28);
-        background: rgba(242, 204, 96, 0.08);
+        border: 1px solid rgba(242,204,96,0.3);
+        background: rgba(242,204,96,0.08);
         color: #f9df89;
       }
 
-      @media (max-width: 840px) {
-        .two-col,
-        .three-col,
-        .metric-grid {
+      @media (max-width: 820px) {
+        .grid-2,
+        .grid-3 {
           grid-template-columns: 1fr;
         }
       }
@@ -308,441 +241,200 @@
   </head>
   <body>
     <div id="root"></div>
-    <script src="react.production.min.js"></script>
-    <script src="react-dom.production.min.js"></script>
     <script>
-      const h = React.createElement;
-
-      const search = new URLSearchParams(window.location.search);
-      const requestedConcept = search.get("concept") || "self-attention";
-      const focus = search.get("focus") || "interview framing";
-
-      const conceptData = {
-        "self-attention": {
-          title: "Self-Attention",
-          subtitle:
-            "A token looks at every other token, scores relevance, then mixes context back into its output.",
-          takeaways: [
-            "The naive cost grows with every token looking at every other token.",
-            "Attention weights show which tokens matter to the current token.",
-            "Interview answer: explain score, normalize, then weighted sum.",
-          ],
-          stages: [
-            {
-              title: "Problem",
-              body: "A token needs global context, not just the previous hidden state.",
-            },
-            {
-              title: "Naive flow",
-              body: "Compute Q, K, V. Compare one query token against all keys. Normalize with softmax. Use the weights to mix values.",
-            },
-            {
-              title: "What breaks at scale",
-              body: "The attention matrix grows quadratically with sequence length, so memory and bandwidth become painful.",
-            },
-            {
-              title: "Interviewer framing",
-              body: "Say what the token attends to, why the matrix is O(n^2), and where the bottleneck appears.",
-            },
-          ],
-          metrics: (length) => ({
-            complexity: "O(n^2)",
-            memory: length * length,
-            latency: Math.round(length * 1.4),
-          }),
-          renderViz: (length) =>
-            h(
-              "div",
-              { className: "viz-box" },
-              h("div", { className: "token-row" }, ...["The", "model", "learns", "context"].map((token) => h("div", { className: "token", key: token }, token))),
-              h("div", { style: { height: "12px" } }),
-              h("div", { className: "heatmap" },
-                ...[
-                  [0.12, 0.21, 0.28, 0.39],
-                  [0.15, 0.18, 0.44, 0.23],
-                  [0.08, 0.11, 0.16, 0.65],
-                  [0.31, 0.19, 0.23, 0.27],
-                ].map((row, rowIndex) =>
-                  h("div", { className: "heatmap-row", key: rowIndex },
-                    ...row.map((value, colIndex) =>
-                      h(
-                        "div",
-                        {
-                          className: "cell",
-                          key: rowIndex + "-" + colIndex,
-                          style: {
-                            background: `rgba(88, 166, 255, ${0.15 + value * 0.75})`,
-                          },
-                        },
-                        value.toFixed(2)
-                      )
-                    )
-                  )
-                )
-              ),
-              h("p", { className: "muted", style: { marginTop: "12px" } }, "Toy heatmap: each row is one query token attending across the sequence.")
-            ),
-        },
-        "multi-head-attention": {
-          title: "Multi-Head Attention",
-          subtitle:
-            "Several attention heads learn different relationships in parallel, then merge their outputs.",
-          takeaways: [
-            "Different heads can specialize in locality, syntax, or long-range references.",
-            "More heads are not automatically better; the point is diverse subspaces.",
-            "Interview answer: parallel views, concatenation, projection, and tradeoffs.",
-          ],
-          stages: [
-            {
-              title: "Problem",
-              body: "One attention pattern may miss other useful relationships in the same sentence.",
-            },
-            {
-              title: "Naive flow",
-              body: "Split the projection space into multiple heads, let each head attend separately, then merge.",
-            },
-            {
-              title: "What breaks at scale",
-              body: "More heads raise compute and memory pressure, so head count and dimension need balancing.",
-            },
-            {
-              title: "Interviewer framing",
-              body: "Talk about specialized subspaces and the merge step, not just 'more attention'.",
-            },
-          ],
-          metrics: (length) => ({
-            complexity: "O(h·n^2)",
-            memory: length * length * 4,
-            latency: Math.round(length * 1.7),
-          }),
-          renderViz: () =>
-            h(
-              "div",
-              { className: "viz-box" },
-              h("div", { className: "head-row" },
-                ...[
-                  ["Head 1", "local syntax"],
-                  ["Head 2", "coreference"],
-                  ["Head 3", "topic relevance"],
-                ].map(([label, desc]) =>
-                  h("div", { className: "metric", key: label },
-                    h("div", { className: "metric-label" }, label),
-                    h("div", { className: "metric-value", style: { fontSize: "18px" } }, desc)
-                  )
-                )
-              ),
-              h("p", { className: "muted", style: { marginTop: "12px" } }, "Think of each head as a different lens on the same sentence.")
-            ),
-        },
-        "flash-attention": {
-          title: "FlashAttention",
-          subtitle:
-            "The math stays equivalent, but the implementation becomes IO-aware by processing attention in blocks.",
-          takeaways: [
-            "The win comes mostly from reducing expensive memory traffic, not changing transformer semantics.",
-            "Blockwise processing avoids materializing the full attention matrix in high-bandwidth memory.",
-            "Interview answer: same output target, better tiling, fewer HBM reads and writes.",
-          ],
-          stages: [
-            {
-              title: "Problem",
-              body: "Naive attention spills giant intermediate matrices to memory and pays repeated IO costs.",
-            },
-            {
-              title: "Naive flow",
-              body: "Materialize QK^T, store it, softmax it, store it, then multiply by V.",
-            },
-            {
-              title: "Optimization",
-              body: "Process tiles that fit on-chip, keep partial statistics, and avoid writing the full matrix out.",
-            },
-            {
-              title: "Interviewer framing",
-              body: "Lead with IO bottleneck, not with just 'it is faster'. Explain blockwise exact attention.",
-            },
-          ],
-          metrics: (length) => ({
-            complexity: "O(n^2) math",
-            memory: length * length,
-            latency: Math.round(length * 1.2),
-          }),
-          renderViz: (length) => {
-            const naiveWrites = Math.round((length * length) / 8);
-            const flashWrites = Math.round((length * length) / 28);
-            const ratio = Math.max(1, Math.round(naiveWrites / Math.max(1, flashWrites)));
-            return h(
-              "div",
-              { className: "viz-box" },
-              h("div", { className: "bar-stack" },
-                h("div", { className: "bar-label" }, h("span", null, "Naive attention memory traffic"), h("span", null, naiveWrites + " units")),
-                h("div", { className: "bar-track" }, h("div", { className: "bar-fill", style: { width: "100%", background: "linear-gradient(90deg, #ff7b72, #f2cc60)" } })),
-                h("div", { className: "bar-label" }, h("span", null, "FlashAttention blockwise traffic"), h("span", null, flashWrites + " units")),
-                h("div", { className: "bar-track" }, h("div", { className: "bar-fill", style: { width: Math.max(8, Math.round((flashWrites / naiveWrites) * 100)) + "%", background: "linear-gradient(90deg, #2ea043, #58a6ff)" } })),
-              ),
-              h("div", { className: "callout", style: { marginTop: "14px" } }, "Interview takeaway: the asymptotic attention math stays quadratic, but the implementation slashes IO by working tile-by-tile. Approximate improvement shown here: " + ratio + "x less memory traffic.")
-            );
-          },
-        },
-        "kv-cache": {
-          title: "KV Cache",
-          subtitle:
-            "During autoregressive decoding, previously computed keys and values are stored so each new token only adds a small incremental step.",
-          takeaways: [
-            "Without a KV cache, generation recomputes old keys and values every step.",
-            "KV cache improves decode efficiency but increases memory usage with context length.",
-            "Interview answer: better per-token latency, worse memory footprint, especially for long prompts and many users.",
-          ],
-          stages: [
-            {
-              title: "Problem",
-              body: "Autoregressive generation repeatedly revisits the growing prefix.",
-            },
-            {
-              title: "Naive flow",
-              body: "At each new token, recompute K and V for the entire context so far.",
-            },
-            {
-              title: "Optimization",
-              body: "Store past K and V once, then append only the new token's entries on each decode step.",
-            },
-            {
-              title: "Interviewer framing",
-              body: "Call out the tradeoff directly: lower decode compute, higher memory pressure per session.",
-            },
-          ],
-          metrics: (length) => ({
-            complexity: "append-only decode",
-            memory: length * 12,
-            latency: Math.round(Math.max(6, length * 0.35)),
-          }),
-          renderViz: (length) => {
-            const steps = [1, 2, 3, 4].map((n) => ({
-              step: n,
-              naive: n * n,
-              cached: n,
-            }));
-            return h(
-              "div",
-              { className: "viz-box" },
-              h("div", { className: "bar-stack" },
-                ...steps.map((entry) =>
-                  h(
-                    "div",
-                    { key: entry.step },
-                    h("div", { className: "bar-label" }, h("span", null, "Decode step " + entry.step), h("span", null, "naive " + entry.naive + " vs cached " + entry.cached)),
-                    h("div", { className: "bar-track" },
-                      h("div", {
-                        className: "bar-fill",
-                        style: {
-                          width: Math.min(100, entry.naive * 20) + "%",
-                          background: "linear-gradient(90deg, #ff7b72, #f2cc60)",
-                        },
-                      })
-                    )
-                  )
-                )
-              ),
-              h("p", { className: "muted", style: { marginTop: "12px" } }, "Each step avoids redoing old K/V work, but cached tensors keep growing with context length " + length + ".")
-            );
-          },
-        },
-      };
-
-      function ErrorApp(message) {
-        return h(
-          "div",
-          { className: "app" },
-          h(
-            "section",
-            { className: "hero" },
-            h("div", { className: "eyebrow" }, h("span", { className: "badge" }, "Render Error")),
-            h("h1", null, "Visualizer failed to render"),
-            h("p", null, "The skill loaded, but the interactive webview hit a runtime error."),
-            h("div", { className: "callout" }, message)
-          )
-        );
+      function getParam(name) {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          return params.get(name) || "";
+        } catch (e) {
+          return "";
+        }
       }
 
-      function App() {
-        const [conceptKey, setConceptKey] = React.useState(
-          conceptData[requestedConcept] ? requestedConcept : "self-attention"
-        );
-        const [stageIndex, setStageIndex] = React.useState(0);
-        const [length, setLength] = React.useState(8);
-
-        const data = conceptData[conceptKey];
-        const stage = data.stages[stageIndex];
-        const metrics = data.metrics(length);
-
-        React.useEffect(() => {
-          setStageIndex(0);
-        }, [conceptKey]);
-
-        return h(
-          "div",
-          { className: "app" },
-          h(
-            "section",
-            { className: "hero" },
-            h(
-              "div",
-              { className: "eyebrow" },
-              h("span", { className: "badge" }, "React Webview"),
-              h("span", null, "SynaptiQ x AI Edge Gallery")
-            ),
-            h("h1", null, data.title),
-            h("p", null, data.subtitle),
-            h(
-              "div",
-              { className: "chip-row" },
-              h("span", { className: "badge" }, "Focus: " + focus),
-              h("span", { className: "badge" }, "Interview-first explainer"),
-              h("span", { className: "badge" }, "Visual + tradeoff framing")
-            )
-          ),
-          h(
-            "section",
-            { className: "panel" },
-            h("div", { className: "stage-head" },
-              h("h2", null, "Concept picker"),
-              h("p", { className: "muted" }, "Switch between common MAANG MLE interview topics")
-            ),
-            h(
-              "div",
-              { className: "chip-row", style: { marginTop: "14px" } },
-              ...Object.entries(conceptData).map(([key, item]) =>
-                h(
-                  "button",
-                  {
-                    key,
-                    className: "chip" + (key === conceptKey ? " active" : ""),
-                    onClick: () => setConceptKey(key),
-                  },
-                  item.title
-                )
-              )
-            )
-          ),
-          h(
-            "section",
-            { className: "row two-col" },
-            h(
-              "div",
-              { className: "panel stage" },
-              h(
-                "div",
-                { className: "stage-head" },
-                h("h2", null, "4-panel interview mental model"),
-                h("span", { className: "muted" }, "Best for fast recall")
-              ),
-              h(
-                "div",
-                { className: "tabs" },
-                ...data.stages.map((item, index) =>
-                  h(
-                    "button",
-                    {
-                      key: item.title,
-                      className: "tab" + (index === stageIndex ? " active" : ""),
-                      onClick: () => setStageIndex(index),
-                    },
-                    (index + 1) + ". " + item.title
-                  )
-                )
-              ),
-              h(
-                "div",
-                { className: "stage" },
-                h("div", { className: "stage-head" },
-                  h("div", { className: "stage-index" }, String(stageIndex + 1)),
-                  h("h3", { style: { flex: 1 } }, stage.title)
-                ),
-                h("p", { className: "muted" }, stage.body)
-              ),
-              h("div", { style: { marginTop: "8px" } }, data.renderViz(length))
-            ),
-            h(
-              "div",
-              { className: "panel stage" },
-              h("h2", null, "Scale intuition"),
-              h("p", { className: "muted" }, "Use the sequence-length slider to make the bottleneck feel concrete."),
-              h(
-                "div",
-                { style: { marginTop: "16px" } },
-                h("div", { className: "bar-label" }, h("span", null, "Sequence length"), h("span", null, length + " tokens")),
-                h("input", {
-                  type: "range",
-                  min: 4,
-                  max: 64,
-                  step: 4,
-                  value: length,
-                  onChange: (event) => setLength(Number(event.target.value)),
-                })
-              ),
-              h(
-                "div",
-                { className: "metric-grid", style: { marginTop: "16px" } },
-                h("div", { className: "metric" }, h("div", { className: "metric-label" }, "Math / scaling"), h("div", { className: "metric-value" }, metrics.complexity)),
-                h("div", { className: "metric" }, h("div", { className: "metric-label" }, "Memory proxy"), h("div", { className: "metric-value" }, String(metrics.memory))),
-                h("div", { className: "metric" }, h("div", { className: "metric-label" }, "Latency proxy"), h("div", { className: "metric-value" }, String(metrics.latency) + " ms"))
-              ),
-              h("div", { className: "callout", style: { marginTop: "16px" } }, "Good interview habit: always connect the concept to sequence length, memory movement, and latency budget.")
-            )
-          ),
-          h(
-            "section",
-            { className: "row two-col" },
-            h(
-              "div",
-              { className: "panel stage" },
-              h("h2", null, "What to say in an interview"),
-              h(
-                "ul",
-                { className: "bullet-list", style: { marginTop: "12px" } },
-                ...data.takeaways.map((item) => h("li", { key: item }, item))
-              )
-            ),
-            h(
-              "div",
-              { className: "panel stage" },
-              h("h2", null, "Visualization best practices"),
-              h(
-                "ul",
-                { className: "bullet-list", style: { marginTop: "12px" } },
-                h("li", null, "Start with the naive version before the optimization."),
-                h("li", null, "Animate one moving part at a time: token flow, memory, or latency."),
-                h("li", null, "Use small concrete examples before abstract matrices."),
-                h("li", null, "End with the business or systems bottleneck in plain English."),
-                h("li", null, "Tie every visual back to what changes at scale.")
-              )
-            )
-          )
-        );
+      function safeDecode(value) {
+        try {
+          return decodeURIComponent(value);
+        } catch (e) {
+          return value;
+        }
       }
+
+      var concept = safeDecode(getParam("concept")) || "self-attention";
+      var title = safeDecode(getParam("title")) || "Concept Visualizer";
+      var subtitle = safeDecode(getParam("subtitle")) || "Interview-first visual explanation";
+      var focus = safeDecode(getParam("focus")) || "interview framing";
+      var payloadRaw = safeDecode(getParam("payload"));
+      var payload = {};
 
       try {
-        const rootElement = document.getElementById("root");
-        if (ReactDOM.createRoot) {
-          ReactDOM.createRoot(rootElement).render(h(App));
-        } else {
-          ReactDOM.render(h(App), rootElement);
-        }
-      } catch (error) {
-        const rootElement = document.getElementById("root");
-        const message = error && error.message ? error.message : String(error);
-        if (window.ReactDOM && rootElement) {
-          if (ReactDOM.createRoot) {
-            ReactDOM.createRoot(rootElement).render(h(ErrorApp, message));
-          } else {
-            ReactDOM.render(h(ErrorApp, message), rootElement);
-          }
-        } else {
-          rootElement.innerHTML =
-            '<div style="padding:20px;color:#e6edf3;background:#0d1117;font-family:system-ui,sans-serif;">Visualizer failed to render: ' +
-            message +
-            "</div>";
-        }
+        payload = payloadRaw ? JSON.parse(payloadRaw) : {};
+      } catch (e) {
+        payload = {
+          stages: [],
+          bullets: ["Failed to parse visualization payload."],
+          metrics: [],
+          viz: { type: "generic" }
+        };
       }
+
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function renderStages(stages) {
+        return stages.map(function(stage, index) {
+          return (
+            '<div class="stage">' +
+              '<div class="stage-index">' + (index + 1) + "</div>" +
+              "<h3>" + escapeHtml(stage.title) + "</h3>" +
+              '<p class="muted" style="margin-top:10px;">' + escapeHtml(stage.body) + "</p>" +
+            "</div>"
+          );
+        }).join("");
+      }
+
+      function renderBullets(items) {
+        return "<ul>" + items.map(function(item) {
+          return "<li>" + escapeHtml(item) + "</li>";
+        }).join("") + "</ul>";
+      }
+
+      function renderMetrics(metrics) {
+        return metrics.map(function(metric) {
+          return (
+            '<div class="metric">' +
+              '<div class="metric-label">' + escapeHtml(metric.label) + "</div>" +
+              '<div class="metric-value">' + escapeHtml(metric.value) + "</div>" +
+            "</div>"
+          );
+        }).join("");
+      }
+
+      function renderSelfAttention() {
+        var rows = [
+          [0.12, 0.21, 0.28, 0.39],
+          [0.15, 0.18, 0.44, 0.23],
+          [0.08, 0.11, 0.16, 0.65],
+          [0.31, 0.19, 0.23, 0.27]
+        ];
+        var heatmap = rows.map(function(row) {
+          return '<div class="heatmap-row">' + row.map(function(value) {
+            return '<div class="cell" style="background:rgba(88,166,255,' + (0.15 + value * 0.75) + ');">' + value.toFixed(2) + "</div>";
+          }).join("") + "</div>";
+        }).join("");
+
+        return (
+          '<div class="viz-box">' +
+            '<div class="token-row">' +
+              '<div class="token">The</div>' +
+              '<div class="token">model</div>' +
+              '<div class="token">learns</div>' +
+              '<div class="token">context</div>' +
+            "</div>" +
+            '<div class="heatmap">' + heatmap + "</div>" +
+            '<p class="muted" style="margin-top:12px;">Toy attention matrix: each row is one query token attending across the whole sequence.</p>' +
+          "</div>"
+        );
+      }
+
+      function renderFlashAttention() {
+        return (
+          '<div class="viz-box">' +
+            '<div class="bar-group">' +
+              '<div><div class="bar-label"><span>Naive attention memory traffic</span><span>100 units</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,var(--red),var(--gold));"></div></div></div>' +
+              '<div><div class="bar-label"><span>Blockwise FlashAttention traffic</span><span>28 units</span></div><div class="bar-track"><div class="bar-fill" style="width:28%;background:linear-gradient(90deg,var(--green),var(--blue));"></div></div></div>' +
+            "</div>" +
+            '<div class="callout" style="margin-top:14px;">Interview takeaway: FlashAttention keeps exact attention math but cuts expensive memory movement by processing tiles on-chip.</div>' +
+          "</div>"
+        );
+      }
+
+      function renderKvCache() {
+        return (
+          '<div class="viz-box">' +
+            '<div class="bar-group">' +
+              '<div><div class="bar-label"><span>Decode step 1</span><span>naive 1 vs cached 1</span></div><div class="bar-track"><div class="bar-fill" style="width:20%;background:linear-gradient(90deg,var(--red),var(--gold));"></div></div></div>' +
+              '<div><div class="bar-label"><span>Decode step 2</span><span>naive 4 vs cached 2</span></div><div class="bar-track"><div class="bar-fill" style="width:42%;background:linear-gradient(90deg,var(--red),var(--gold));"></div></div></div>' +
+              '<div><div class="bar-label"><span>Decode step 3</span><span>naive 9 vs cached 3</span></div><div class="bar-track"><div class="bar-fill" style="width:65%;background:linear-gradient(90deg,var(--red),var(--gold));"></div></div></div>' +
+              '<div><div class="bar-label"><span>Decode step 4</span><span>naive 16 vs cached 4</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,var(--red),var(--gold));"></div></div></div>' +
+            "</div>" +
+            '<p class="muted" style="margin-top:12px;">Without a KV cache, old key/value work keeps getting recomputed. With a cache, new tokens append incremental state.</p>' +
+          "</div>"
+        );
+      }
+
+      function renderHeads() {
+        return (
+          '<div class="viz-box">' +
+            '<div class="grid-3">' +
+              '<div class="metric"><div class="metric-label">Head 1</div><div class="metric-value" style="font-size:18px;">local syntax</div></div>' +
+              '<div class="metric"><div class="metric-label">Head 2</div><div class="metric-value" style="font-size:18px;">coreference</div></div>' +
+              '<div class="metric"><div class="metric-label">Head 3</div><div class="metric-value" style="font-size:18px;">topic relevance</div></div>' +
+            "</div>" +
+            '<p class="muted" style="margin-top:12px;">Different heads can focus on different relationships in parallel before merging.</p>' +
+          "</div>"
+        );
+      }
+
+      function renderGeneric() {
+        return (
+          '<div class="viz-box">' +
+            '<div class="callout">Generic visualization mode: the concept did not match a specialized template, so this skill is showing the reusable interview breakdown.</div>' +
+            '<div class="stage-list" style="margin-top:14px;">' +
+              '<div class="stage"><div class="stage-index">1</div><h3>What problem does it solve?</h3><p class="muted" style="margin-top:10px;">State the bottleneck or missing capability first.</p></div>' +
+              '<div class="stage"><div class="stage-index">2</div><h3>How does the naive version work?</h3><p class="muted" style="margin-top:10px;">Give the simplest mental model before the optimization.</p></div>' +
+              '<div class="stage"><div class="stage-index">3</div><h3>What breaks at scale?</h3><p class="muted" style="margin-top:10px;">Call out memory, latency, quality, or reliability pressure.</p></div>' +
+              '<div class="stage"><div class="stage-index">4</div><h3>What changed in the optimized design?</h3><p class="muted" style="margin-top:10px;">Explain the tradeoff that makes the system practical.</p></div>' +
+            "</div>" +
+          "</div>"
+        );
+      }
+
+      function renderViz(type) {
+        if (type === "self-attention") return renderSelfAttention();
+        if (type === "multi-head-attention") return renderHeads();
+        if (type === "flash-attention") return renderFlashAttention();
+        if (type === "kv-cache") return renderKvCache();
+        return renderGeneric();
+      }
+
+      var stages = payload.stages || [];
+      var bullets = payload.bullets || [];
+      var metrics = payload.metrics || [];
+      var vizType = payload.viz && payload.viz.type ? payload.viz.type : "generic";
+
+      document.getElementById("root").innerHTML =
+        '<div class="app">' +
+          '<section class="hero">' +
+            '<div class="eyebrow">SynaptiQ x AI Edge Gallery</div>' +
+            "<h1>" + escapeHtml(title) + "</h1>" +
+            '<p class="muted">' + escapeHtml(subtitle) + "</p>" +
+            '<div class="chip-row">' +
+              '<span class="chip">Concept: ' + escapeHtml(concept) + "</span>" +
+              '<span class="chip">Focus: ' + escapeHtml(focus) + "</span>" +
+              '<span class="chip">Mode: ' + escapeHtml(vizType) + "</span>" +
+            "</div>" +
+          "</section>" +
+          '<section class="grid-2">' +
+            '<div class="card">' +
+              "<h2>4-panel interview mental model</h2>" +
+              '<p class="muted" style="margin-top:10px;">Use this structure to explain the concept clearly under interview pressure.</p>' +
+              '<div class="stage-list" style="margin-top:16px;">' + renderStages(stages) + "</div>" +
+              '<div style="margin-top:16px;">' + renderViz(vizType) + "</div>" +
+            "</div>" +
+            '<div class="card">' +
+              "<h2>What to say in an interview</h2>" +
+              '<div class="bullet-list" style="margin-top:12px;">' + renderBullets(bullets) + "</div>" +
+              '<div class="grid-3" style="margin-top:16px;">' + renderMetrics(metrics) + "</div>" +
+              '<div class="callout" style="margin-top:16px;">Best practice for visualization: show the naive version, the bottleneck, and the tradeoff that makes the optimized design work.</div>' +
+            "</div>" +
+          "</section>" +
+        "</div>";
     </script>
   </body>
 </html>

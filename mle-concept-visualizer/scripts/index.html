@@ -6,76 +6,186 @@
   </head>
   <body>
     <script>
-      const CONCEPTS = {
+      var PRESETS = {
         "self-attention": {
-          label: "Self-Attention",
-          summary:
-            "Shows how one token compares itself against all other tokens, converts scores into weights, and mixes context back into the output.",
+          title: "Self-Attention",
+          subtitle: "A token compares itself against all tokens, then mixes context back into the output.",
+          bullets: [
+            "Every token creates query, key, and value vectors.",
+            "Attention scores tell us which tokens matter to the current token.",
+            "The bottleneck is the full attention matrix growing quadratically with sequence length."
+          ],
+          stages: [
+            { title: "Problem", body: "A token needs global context, not just the previous hidden state." },
+            { title: "Naive flow", body: "Compute Q, K, and V, compare the query token against all keys, normalize the scores, then mix values." },
+            { title: "What breaks at scale", body: "The attention matrix is O(n^2) in sequence length, which stresses memory and latency." },
+            { title: "Interviewer framing", body: "Explain score, softmax, weighted sum, and why the matrix becomes the bottleneck." }
+          ],
+          metrics: [
+            { label: "Math / scaling", value: "O(n^2)" },
+            { label: "Main bottleneck", value: "memory" },
+            { label: "Interview hook", value: "global context" }
+          ],
+          viz: { type: "self-attention" }
         },
         "multi-head-attention": {
-          label: "Multi-Head Attention",
-          summary:
-            "Shows how different heads can attend to different relationships in parallel before merging their views.",
+          title: "Multi-Head Attention",
+          subtitle: "Several attention heads learn different relationships in parallel before merging.",
+          bullets: [
+            "Different heads can focus on different relationships in the same sequence.",
+            "The value is multiple representation subspaces, not just more compute.",
+            "A strong answer explains the per-head view and the merge step."
+          ],
+          stages: [
+            { title: "Problem", body: "One attention pattern may miss other useful relationships in a sentence." },
+            { title: "Naive flow", body: "Project into multiple heads, attend separately, concatenate the outputs, then project again." },
+            { title: "What breaks at scale", body: "More heads add compute and memory pressure, so head count and width need balancing." },
+            { title: "Interviewer framing", body: "Stress specialized subspaces and parallel relationships, not just 'more attention'." }
+          ],
+          metrics: [
+            { label: "Math / scaling", value: "O(h·n^2)" },
+            { label: "Main bottleneck", value: "compute + memory" },
+            { label: "Interview hook", value: "parallel views" }
+          ],
+          viz: { type: "multi-head-attention" }
         },
         "flash-attention": {
-          label: "FlashAttention",
-          summary:
-            "Shows how blockwise attention keeps the same math while cutting expensive memory movement.",
+          title: "FlashAttention",
+          subtitle: "An IO-aware implementation of attention that avoids materializing large intermediates in expensive memory.",
+          bullets: [
+            "FlashAttention does not change transformer semantics; it changes how the computation is scheduled.",
+            "The big win is reduced memory traffic, not a new attention formula.",
+            "Interview answer: tiled exact attention, on-chip blocks, fewer HBM reads and writes."
+          ],
+          stages: [
+            { title: "Problem", body: "Naive attention writes giant intermediate matrices to memory and pays repeated IO cost." },
+            { title: "Naive flow", body: "Materialize QK^T, materialize the softmax, then multiply by V." },
+            { title: "What changed", body: "Process attention in tiles that fit on-chip and keep running normalization statistics." },
+            { title: "Interviewer framing", body: "Lead with IO bottleneck and memory movement before talking about speed." }
+          ],
+          metrics: [
+            { label: "Math / scaling", value: "O(n^2) math" },
+            { label: "Main bottleneck", value: "IO / bandwidth" },
+            { label: "Interview hook", value: "blockwise exact attention" }
+          ],
+          viz: { type: "flash-attention" }
         },
         "kv-cache": {
-          label: "KV Cache",
-          summary:
-            "Shows why autoregressive decoding stores keys and values from previous tokens to avoid recomputing them each step.",
-        },
+          title: "KV Cache",
+          subtitle: "Autoregressive decoding stores old keys and values so each new token adds incremental work instead of recomputing the full prefix.",
+          bullets: [
+            "Without a KV cache, decoding keeps recomputing old key/value states.",
+            "A KV cache reduces per-token decode compute but increases memory footprint.",
+            "Interview answer: lower latency per new token, higher memory per active sequence."
+          ],
+          stages: [
+            { title: "Problem", body: "Autoregressive generation revisits the entire prefix at every step." },
+            { title: "Naive flow", body: "Recompute keys and values for the whole context on each decode step." },
+            { title: "What changed", body: "Store old keys and values once, then append only the newest token's state." },
+            { title: "Interviewer framing", body: "Say the tradeoff explicitly: better decode speed, worse memory pressure." }
+          ],
+          metrics: [
+            { label: "Math / scaling", value: "append-only decode" },
+            { label: "Main bottleneck", value: "memory footprint" },
+            { label: "Interview hook", value: "latency vs memory" }
+          ],
+          viz: { type: "kv-cache" }
+        }
       };
 
-      const ALIASES = {
-        attention: "self-attention",
+      var ALIASES = {
+        "attention": "self-attention",
         "attention visualization": "self-attention",
         "attention visualisation": "self-attention",
-        mha: "multi-head-attention",
+        "self attention": "self-attention",
+        "mha": "multi-head-attention",
         "multi head attention": "multi-head-attention",
         "flash attention": "flash-attention",
-        flashattention: "flash-attention",
+        "flashattention": "flash-attention",
         "kv cache": "kv-cache",
         "key value cache": "kv-cache",
         "key-value cache": "kv-cache",
         "qkv cache": "kv-cache",
-        "qkv-cache": "kv-cache",
+        "qkv-cache": "kv-cache"
       };
+
+      function parseData(data) {
+        if (!data) return {};
+        if (typeof data === "object") return data;
+        try {
+          return JSON.parse(data);
+        } catch (e) {
+          return { concept: String(data) };
+        }
+      }
 
       function normalizeConcept(raw) {
         if (!raw) return "self-attention";
-        const lower = String(raw).trim().toLowerCase();
-        return CONCEPTS[lower] ? lower : ALIASES[lower] || "self-attention";
+        var lower = String(raw).trim().toLowerCase();
+        if (PRESETS[lower]) return lower;
+        if (ALIASES[lower]) return ALIASES[lower];
+        if (lower.indexOf("flash") !== -1) return "flash-attention";
+        if (lower.indexOf("cache") !== -1) return "kv-cache";
+        if (lower.indexOf("head") !== -1) return "multi-head-attention";
+        if (lower.indexOf("attention") !== -1) return "self-attention";
+        return "generic";
       }
 
-      window["ai_edge_gallery_get_result"] = async (data) => {
+      function buildGenericPreset(concept, focus) {
+        return {
+          title: concept,
+          subtitle: "General interview visualization for " + concept + ".",
+          bullets: [
+            "Start with the problem the concept is solving.",
+            "Explain the naive version before the optimized one.",
+            "Highlight the main tradeoff in latency, memory, quality, or scale."
+          ],
+          stages: [
+            { title: "Problem", body: "What bottleneck or missing capability does " + concept + " address?" },
+            { title: "Naive flow", body: "Describe the simplest working version first." },
+            { title: "What breaks at scale", body: "Call out the main pressure: memory, latency, compute, or reliability." },
+            { title: "Interviewer framing", body: "Tie the concept back to tradeoffs, production constraints, and " + focus + "." }
+          ],
+          metrics: [
+            { label: "Focus", value: focus || "intuition" },
+            { label: "Mode", value: "generic" },
+            { label: "Interview hook", value: "tradeoffs" }
+          ],
+          viz: { type: "generic" }
+        };
+      }
+
+      window["ai_edge_gallery_get_result"] = async function(data) {
         try {
-          const parsed = data ? JSON.parse(data) : {};
-          const concept = normalizeConcept(parsed.concept);
-          const focus = parsed.focus ? String(parsed.focus).trim() : "";
-          const details = CONCEPTS[concept];
-          const query = new URLSearchParams({
-            concept,
-            label: details.label,
-            summary: details.summary,
-            focus,
+          var parsed = parseData(data);
+          var rawConcept = parsed.concept ? String(parsed.concept).trim() : "self-attention";
+          var focus = parsed.focus ? String(parsed.focus).trim() : "interview framing";
+          var conceptKey = normalizeConcept(rawConcept);
+          var preset = PRESETS[conceptKey] || buildGenericPreset(rawConcept, focus);
+          var payload = JSON.stringify({
+            stages: preset.stages,
+            bullets: preset.bullets,
+            metrics: preset.metrics,
+            viz: preset.viz
+          });
+          var params = new URLSearchParams({
+            concept: rawConcept,
+            title: preset.title,
+            subtitle: preset.subtitle,
+            focus: focus,
+            payload: payload
           });
 
           return JSON.stringify({
-            result:
-              "Opened an interactive explainer for " +
-              details.label +
-              (focus ? " with extra focus on " + focus + "." : "."),
+            result: "Opened an interactive visual explanation for " + preset.title + ".",
             webview: {
-              url: "webview.html?" + query.toString(),
-              aspectRatio: 1.35,
-            },
+              url: "webview.html?" + params.toString(),
+              aspectRatio: 1.35
+            }
           });
         } catch (error) {
           return JSON.stringify({
-            error: "Failed to prepare concept visualizer: " + error.message,
+            error: "Failed to prepare concept visualizer: " + error.message
           });
         }
       };
